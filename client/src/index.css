@@ -1,0 +1,889 @@
+/* Nunito Font — bundled locally, no CDN */
+@font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-400.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-500.ttf') format('truetype'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-600.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-700.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-800.ttf') format('truetype'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-900.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+
+:root {
+  --warm-bg: #FFF9F2;
+  --warm-card: #FFFFFF;
+  --warm-border: #F0E6D9;
+  --warm-border-subtle: #F5EDE3;
+  --warm-text: #3D2F1E;
+  --warm-text-secondary: #6B5B4A;
+  --warm-text-muted: #8A7A6A;
+  --warm-text-light: #B0A090;
+  --warm-accent: #F97316;
+  --warm-accent-light: #FFF7ED;
+  --warm-accent-hover: #EA580C;
+  --warm-bg-subtle: #FFFBF5;
+  --warm-bg-warm: #FFF9F0;
+  --warm-bg-input: #FFFFFF;
+  --warm-sidebar: #FFFFFF;
+  --warm-sidebar-active: #FFF7ED;
+  --warm-sidebar-border: #F0E6D9;
+  --warm-sidebar-user-bg: #FFF7ED;
+  --warm-sidebar-user-border: #FDE68A;
+  --warm-streak-bg: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+  --warm-streak-border: #FDE68A;
+  --warm-streak-text: #92400E;
+  --warm-streak-subtext: #B45309;
+  --warm-danger: #EF4444;
+  --warm-danger-bg: #FFF1F1;
+  --warm-danger-border: #FECACA;
+  --warm-badge-bg: #FDECEC;
+  --warm-badge-text: #E25A5A;
+  --warm-coin: #F59E0B;
+  --health-bar-track: #F5EDE3;
+  --health-green: #5CB85C;
+  --health-yellow: #E8A838;
+  --health-red: #E25A5A;
+  --health-green-bg: #EDF7ED;
+  --health-yellow-bg: #FFF8EC;
+  --health-red-bg: #FDECEC;
+  --warm-shadow: rgba(180, 150, 100, 0.1);
+  --warm-primary-shadow: rgba(249, 115, 22, 0.25);
+
+  /* Status badge colors */
+  --status-approved-text: #15803D;
+  --status-approved-bg: #DCFCE7;
+  --status-approved-border: #86EFAC;
+  --status-rejected-text: #B91C1C;
+  --status-rejected-bg: #FEE2E2;
+  --status-rejected-border: #FCA5A5;
+  --status-cancelled-text: #374151;
+  --status-cancelled-bg: #E5E7EB;
+  --status-cancelled-border: #D1D5DB;
+
+  /* Task health badge colors */
+  --task-healthy-text: #166534;
+  --task-healthy-bg: #E8F6EC;
+  --task-healthy-border: #86EFAC;
+  --task-warning-text: #92400E;
+  --task-warning-bg: #FFF7E6;
+  --task-warning-border: #FCD34D;
+  --task-critical-text: #991B1B;
+  --task-critical-bg: #FDECEC;
+  --task-critical-border: #FCA5A5;
+
+  /* Design System — Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* Design System — Radius scale */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Design System — Card padding */
+  --card-padding: 20px;
+
+  /* Design System — Input sizing */
+  --input-padding: 10px 14px;
+  --input-radius: 12px;
+  --input-border: 1.5px solid var(--warm-border);
+  --input-font-size: 14px;
+}
+
+html[data-theme='blue'] {
+  --warm-bg: #F3F9FF;
+  --warm-card: #FFFFFF;
+  --warm-border: #DDEAF8;
+  --warm-border-subtle: #E8F1FA;
+  --warm-text: #21354A;
+  --warm-text-secondary: #3D5570;
+  --warm-text-muted: #5A7A98;
+  --warm-text-light: #8194A8;
+  --warm-accent: #3B82F6;
+  --warm-accent-light: #EAF2FF;
+  --warm-accent-hover: #2563EB;
+  --warm-bg-subtle: #F8FBFF;
+  --warm-bg-warm: #F0F6FF;
+  --warm-bg-input: #FFFFFF;
+  --warm-sidebar: #FFFFFF;
+  --warm-sidebar-active: #EAF2FF;
+  --warm-sidebar-border: #DDEAF8;
+  --warm-sidebar-user-bg: #EAF2FF;
+  --warm-sidebar-user-border: #BAD6FC;
+  --warm-streak-bg: linear-gradient(135deg, #EAF2FF, #DBEAFE);
+  --warm-streak-border: #BAD6FC;
+  --warm-streak-text: #1E40AF;
+  --warm-streak-subtext: #2563EB;
+  --warm-primary-shadow: rgba(59, 130, 246, 0.25);
+}
+
+html[data-theme='rose'] {
+  --warm-bg: #FFF5F8;
+  --warm-card: #FFFFFF;
+  --warm-border: #F2DDE6;
+  --warm-border-subtle: #F7E6EE;
+  --warm-text: #4A2435;
+  --warm-text-secondary: #6E3E55;
+  --warm-text-muted: #8A6070;
+  --warm-text-light: #A37E8F;
+  --warm-accent: #EC4899;
+  --warm-accent-light: #FDEAF3;
+  --warm-accent-hover: #DB2777;
+  --warm-bg-subtle: #FFF9FB;
+  --warm-bg-warm: #FFF0F5;
+  --warm-bg-input: #FFFFFF;
+  --warm-sidebar: #FFFFFF;
+  --warm-sidebar-active: #FDEAF3;
+  --warm-sidebar-border: #F2DDE6;
+  --warm-sidebar-user-bg: #FDEAF3;
+  --warm-sidebar-user-border: #F9A8D4;
+  --warm-streak-bg: linear-gradient(135deg, #FDEAF3, #FCE7F3);
+  --warm-streak-border: #F9A8D4;
+  --warm-streak-text: #9D174D;
+  --warm-streak-subtext: #BE185D;
+  --warm-primary-shadow: rgba(236, 72, 153, 0.25);
+}
+
+html[data-theme='night'] {
+  --warm-bg: #0B0F19;
+  --warm-card: #1C2436;
+  --warm-border: #334155;
+  --warm-border-subtle: #2D3B4F;
+  --warm-text: #E2E8F0;
+  --warm-text-secondary: #CBD5E1;
+  --warm-text-muted: #94A3B8;
+  --warm-text-light: #64748B;
+  --warm-accent: #60A5FA;
+  --warm-accent-light: #24324A;
+  --warm-accent-hover: #3B82F6;
+  --warm-bg-subtle: #253149;
+  --warm-bg-warm: #2B3954;
+  --warm-bg-input: #1A2233;
+  --warm-sidebar: #141B2A;
+  --warm-sidebar-active: #223048;
+  --warm-sidebar-border: #334155;
+  --warm-sidebar-user-bg: #223048;
+  --warm-sidebar-user-border: #475569;
+  --warm-streak-bg: linear-gradient(135deg, #1C2436, #253149);
+  --warm-streak-border: #475569;
+  --warm-streak-text: #93C5FD;
+  --warm-streak-subtext: #60A5FA;
+  --warm-danger: #F87171;
+  --warm-danger-bg: #2A1F1F;
+  --warm-danger-border: #7F1D1D;
+  --warm-badge-bg: #2A1F1F;
+  --warm-badge-text: #F87171;
+  --warm-coin: #FBBF24;
+  --health-bar-track: #334155;
+  --health-green-bg: #1A2E1A;
+  --health-yellow-bg: #2E2A1A;
+  --health-red-bg: #2E1A1A;
+  --warm-shadow: rgba(0, 0, 0, 0.3);
+  --warm-primary-shadow: rgba(96, 165, 250, 0.25);
+
+  /* Status badge colors — dark theme */
+  --status-approved-text: #4ADE80;
+  --status-approved-bg: #1A2E1A;
+  --status-approved-border: #166534;
+  --status-rejected-text: #FCA5A5;
+  --status-rejected-bg: #2A1F1F;
+  --status-rejected-border: #7F1D1D;
+  --status-cancelled-text: #94A3B8;
+  --status-cancelled-bg: #1E293B;
+  --status-cancelled-border: #475569;
+
+  /* Task health badge colors — dark theme */
+  --task-healthy-text: #4ADE80;
+  --task-healthy-bg: #1A2E1A;
+  --task-healthy-border: #166534;
+  --task-warning-text: #FBBF24;
+  --task-warning-bg: #2E2A1A;
+  --task-warning-border: #92400E;
+  --task-critical-text: #FCA5A5;
+  --task-critical-bg: #2E1A1A;
+  --task-critical-border: #7F1D1D;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--warm-bg);
+  color: var(--warm-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--warm-border); border-radius: 99px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter { animation: fadeIn 0.3s ease; }
+
+.tq-card {
+  background: var(--warm-card);
+  border-radius: 20px;
+  border: 1.5px solid var(--warm-border);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tq-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--warm-shadow);
+}
+
+.tq-btn {
+  border: none;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tq-btn:hover { filter: brightness(1.05); transform: scale(1.02); }
+.tq-btn:active { transform: scale(0.97); }
+
+.tq-btn-primary {
+  background: var(--warm-accent);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--warm-primary-shadow);
+}
+
+.tq-btn-secondary {
+  background: var(--warm-card);
+  color: var(--warm-text);
+  border: 1.5px solid var(--warm-border);
+}
+.tq-btn-secondary:hover {
+  border-color: var(--warm-accent);
+  color: var(--warm-accent);
+}
+
+/* ========================================
+   DESIGN SYSTEM — Utility Classes
+   ======================================== */
+
+/* Button sizes */
+.tq-btn-sm { padding: 6px 12px; font-size: 12px; }
+.tq-btn-md { padding: 10px 16px; font-size: 13px; }
+.tq-btn-lg { padding: 12px 20px; font-size: 14px; }
+
+/* Standardized input */
+.tq-input {
+  width: 100%;
+  padding: var(--input-padding);
+  border-radius: var(--input-radius);
+  border: var(--input-border);
+  font-size: var(--input-font-size);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  color: var(--warm-text);
+  background-color: var(--warm-bg-input);
+  outline: none;
+  box-sizing: border-box;
+}
+.tq-input:focus {
+  border-color: var(--warm-accent);
+}
+
+/* Compact input variant (for inline number fields, small selects) */
+.tq-input-compact {
+  padding: 5px 6px;
+  border-radius: var(--radius-sm);
+  border: var(--input-border);
+  font-size: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  color: var(--warm-text);
+  background-color: var(--warm-bg-input);
+  outline: none;
+  box-sizing: border-box;
+}
+.tq-input-compact:focus {
+  border-color: var(--warm-accent);
+}
+
+/* Standardized label */
+.tq-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--warm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Card title */
+.tq-card-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--warm-text);
+  margin: 0 0 12px;
+}
+
+/* Card with standard padding */
+.tq-card-padded {
+  padding: var(--card-padding);
+}
+
+/* Modal overlay */
+.tq-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+/* Modal container — responsive by default */
+.tq-modal {
+  width: 90vw;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.tq-modal-wide {
+  max-width: 680px;
+}
+.tq-modal-narrow {
+  max-width: 380px;
+}
+.tq-modal-inner {
+  padding: var(--space-3xl);
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Empty state */
+.tq-empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--warm-text-light);
+  font-weight: 600;
+  font-size: 13px;
+}
+.tq-empty-state-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--warm-text-light);
+  margin-bottom: 8px;
+}
+
+/* Page containers */
+.tq-page-narrow { max-width: 520px; }
+.tq-page-medium { max-width: 700px; }
+.tq-page-wide { max-width: 900px; }
+
+/* Dashboard grid layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-xl);
+  animation: fadeIn 0.3s ease;
+  align-items: start;
+}
+.dashboard-grid > .dashboard-hero {
+  grid-column: 1 / -1;
+}
+
+/* Settings grid — via CSS class, not inline */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+}
+
+/* Night theme: ensure inputs and selects are readable */
+html[data-theme='night'] input,
+html[data-theme='night'] textarea,
+html[data-theme='night'] select {
+  background-color: var(--warm-bg-input) !important;
+  color: var(--warm-text) !important;
+  border-color: var(--warm-border) !important;
+}
+html[data-theme='night'] input::placeholder,
+html[data-theme='night'] textarea::placeholder {
+  color: var(--warm-text-light) !important;
+}
+html[data-theme='night'] option {
+  background-color: var(--warm-card);
+  color: var(--warm-text);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - Mobile First
+   ======================================== */
+
+/* Utility classes for responsive behavior */
+.mobile-only { display: none; }
+.history-mobile-meta { display: none; }
+.desktop-only { display: block; }
+
+/* Tablet breakpoint (max-width: 1024px) */
+@media (max-width: 1024px) {
+  body {
+    font-size: 14px;
+  }
+
+  .tq-card {
+    border-radius: 16px;
+  }
+
+  .tq-btn {
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+}
+
+/* Mobile breakpoint (max-width: 768px) */
+@media (max-width: 768px) {
+  :root {
+    --card-padding: 16px;
+    --space-3xl: 24px;
+  }
+
+  .mobile-only { display: block; }
+  .desktop-only { display: none; }
+
+  body {
+    font-size: 14px;
+  }
+
+  .tq-card {
+    border-radius: 14px;
+    border-width: 1px;
+  }
+
+  .tq-btn {
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 15px;
+    min-height: 44px; /* Touch-friendly tap target */
+    justify-content: center;
+  }
+
+  /* Keep small buttons small on mobile */
+  .tq-btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-height: auto;
+  }
+
+  /* Make buttons full-width on mobile when in containers */
+  .tq-btn-block {
+    width: 100%;
+  }
+
+  /* Force text inputs, textareas, and selects to be properly sized */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    box-sizing: border-box !important;
+  }
+
+  /* Only make inputs 100% if they have flex: 1 (meaning they're in a flex container) */
+  input[style*="flex: 1"],
+  textarea[style*="flex: 1"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Responsive modal */
+  .tq-modal {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+  }
+  .tq-modal-inner {
+    padding: var(--space-xl);
+  }
+
+  /* Page-specific responsive grids */
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .room-type-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .task-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calendar-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calendar-sidebar {
+    display: none !important;
+  }
+
+  /* Dashboard: force single column on mobile */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .page-header-actions {
+    width: 100%;
+    gap: 8px !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap;
+  }
+
+  .page-header-actions > div {
+    padding: 7px 12px !important;
+  }
+
+  .auth-card {
+    padding: 24px !important;
+  }
+
+  /* Activity: responsive card layout on mobile */
+  .history-table-scroll {
+    overflow-x: unset;
+  }
+
+  .history-header {
+    display: none !important;
+  }
+
+  .history-row {
+    grid-template-columns: 38px 1fr 70px !important;
+    min-width: 0 !important;
+  }
+
+  .history-col-room,
+  .history-col-when {
+    display: none !important;
+  }
+
+  .history-mobile-meta {
+    display: block !important;
+  }
+
+  /* Rooms task table: scrollable */
+  .room-table-scroll {
+    overflow-x: auto;
+  }
+
+  .room-table-scroll > div {
+    min-width: 580px;
+  }
+
+  .room-detail-hero {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+    padding: 18px !important;
+  }
+
+  .room-detail-hero .tq-btn {
+    width: 100%;
+  }
+
+  .room-detail-scroll > div {
+    min-width: 0 !important;
+  }
+
+  .room-table-header {
+    display: none !important;
+  }
+
+  .room-task-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 12px 8px !important;
+  }
+
+  .room-task-main,
+  .room-task-health,
+  .room-task-frequency,
+  .room-task-effort,
+  .room-task-coins,
+  .room-task-due,
+  .room-task-assigned,
+  .room-task-actions {
+    min-width: 0 !important;
+  }
+
+  .room-task-actions {
+    justify-content: stretch !important;
+    flex-wrap: wrap;
+  }
+
+  .room-task-actions > button,
+  .room-task-actions .tq-btn {
+    flex: 1 1 120px;
+  }
+
+  .task-add-form {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .task-add-form > div {
+    width: 100% !important;
+  }
+
+  /* Settings admin cards: keep horizontal scroll for wide tables */
+  .settings-admin-card {
+    overflow-x: auto;
+  }
+
+  /* Coins per effort: 2-column layout on mobile */
+  .coins-effort-row {
+    grid-template-columns: 1fr 90px !important;
+  }
+
+  .coins-effort-dots {
+    display: none !important;
+  }
+
+  /* Fix input overflow inside the coin flex cell */
+  .coins-effort-row > div,
+  .coins-effort-value {
+    min-width: 0 !important;
+  }
+
+  .coins-effort-row input[type="number"] {
+    width: auto !important;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Goals by member: avoid fixed columns on narrow screens */
+  .goal-member-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .goal-member-row > div,
+  .goal-member-row > button {
+    min-width: 0 !important;
+  }
+
+  .goal-member-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .goal-member-form input,
+  .goal-member-form button {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .goal-member-end-date {
+    display: none !important;
+  }
+
+  /* Rewards add form: stack to single column */
+  .rewards-add-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Rewards list row: name + cost + delete (hide description) */
+  .rewards-list-row {
+    grid-template-columns: 1fr auto auto !important;
+  }
+
+  .rewards-list-row > div:nth-child(2) {
+    display: none !important;
+  }
+
+  .rewards-list-row > div:nth-child(1) {
+    min-width: 0 !important;
+    overflow-wrap: anywhere;
+  }
+
+  /* Reward requests: name + reward title + status (hide cost and date) */
+  .rewards-requests-row {
+    grid-template-columns: 1fr 1fr auto !important;
+  }
+
+  .rewards-requests-row > div:nth-child(3),
+  .rewards-requests-row > div:nth-child(5) {
+    display: none !important;
+  }
+
+  .rewards-requests-row > div:nth-child(1),
+  .rewards-requests-row > div:nth-child(2) {
+    min-width: 0 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .rewards-catalog-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rewards-my-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .rewards-my-row-meta {
+    justify-content: space-between !important;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .rewards-confirm-modal {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  .rewards-confirm-actions {
+    flex-direction: column-reverse !important;
+  }
+
+  .rewards-confirm-actions .tq-btn {
+    width: 100%;
+  }
+
+  /* Family members: improve mobile readability and tap targets */
+  .family-members-card {
+    overflow-x: visible !important;
+  }
+
+  .family-members-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .family-members-header .tq-btn {
+    width: 100%;
+  }
+
+  .family-members-add-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .family-members-add-form .tq-btn {
+    width: 100%;
+  }
+
+  .family-members-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .family-member-card {
+    padding: 12px !important;
+  }
+
+  .family-member-title-row,
+  .family-member-stats {
+    flex-wrap: wrap;
+  }
+
+  .family-member-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .family-member-actions select,
+  .family-member-actions .tq-btn {
+    width: 100% !important;
+  }
+
+  .member-edit-password-row {
+    flex-direction: column !important;
+  }
+
+  /* Make range inputs full width */
+  input[type="range"] {
+    width: 100% !important;
+  }
+
+  /* Page-enter containers should have max-width 100% */
+  .page-enter {
+    max-width: 100% !important;
+  }
+
+  /* Specific fixes for edit task form */
+  .task-edit-form {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .task-edit-form > div {
+    width: 100% !important;
+  }
+
+  /* Mobile sidebar - hidden by default, slides in when open */
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Show mobile overlay when sidebar is open */
+  .mobile-overlay {
+    display: block !important;
+  }
+
+  /* Show mobile-only close button */
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* Show hamburger menu on mobile */
+  .hamburger-menu {
+    display: flex !important;
+  }
+
+  /* Adjust main content for mobile - remove sidebar margin */
+  .main-content {
+    margin-left: 0 !important;
+    padding: 72px 16px 24px 16px !important;
+  }
+}
+
+/* Desktop - ensure sidebar is always visible */
+@media (min-width: 769px) {
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .mobile-overlay {
+    display: none !important;
+  }
+}
