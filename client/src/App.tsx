@@ -18,6 +18,7 @@ import { Login } from './components/pages/Login';
 import { Register } from './components/pages/Register';
 import { Achievements } from './components/pages/Achievements';
 import { Rewards } from './components/pages/Rewards';
+import { Quiz } from './components/pages/Quiz';
 import { useTranslation } from './hooks/useTranslation';
 
 function AppContent() {
@@ -50,7 +51,7 @@ function AppContent() {
   const [taskErrorMsg, setTaskErrorMsg] = useState<string | null>(null);
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+  const [sidebarCollapsed] = useState(() => {
     if (typeof window === 'undefined') return false;
     const saved = localStorage.getItem('tidyquest-sidebar-collapsed');
     return saved === 'true';
@@ -165,7 +166,7 @@ function AppContent() {
   }, [theme]);
 
   useEffect(() => {
-    document.title = 'TidyQuest';
+    document.title = '橄榄树电子银行';
   }, []);
 
   useEffect(() => {
@@ -349,7 +350,6 @@ function AppContent() {
         onClose={() => setIsMobileSidebarOpen(false)}
         gamificationEnabled={gamificationEnabled}
         collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed(prev => !prev)}
       />
 
       <main style={{ marginLeft: sidebarCollapsed ? 60 : 240, flex: 1, padding: '28px 36px', maxWidth: 1320, backgroundColor: 'var(--warm-bg)', transition: 'margin-left 0.3s ease' }} className="main-content">
@@ -369,6 +369,7 @@ function AppContent() {
                   onRefresh={loadDashboard}
                   onNavigateToRoom={(id) => navigate(`/rooms/${id}`)}
                   onNavigateToActivity={() => navigate('/activity')}
+                  onNavigateToQuiz={() => navigate('/quiz')}
                   onRewardRequestAction={async (id, status) => {
                     await api.updateRedemptionStatus(id, status);
                     await Promise.all([loadDashboard(), loadRewards()]);
@@ -401,6 +402,12 @@ function AppContent() {
                   void refreshRooms();
                 }}
               />
+            </>
+          } />
+          <Route path="/quiz" element={
+            <>
+              <PageHeader title="Quiz for Olive Coins" subtitle="答题淘金币" user={user} onCoinsClick={() => navigate('/rewards')} onStreakClick={() => navigate('/achievements')} onPointsClick={handlePointsClick} userPoints={myPoints} pointsPeriodLabel={pointsPeriodLabel} gamificationEnabled={gamificationEnabled} />
+              <Quiz />
             </>
           } />
 

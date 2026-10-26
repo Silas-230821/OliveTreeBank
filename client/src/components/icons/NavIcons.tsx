@@ -35,19 +35,19 @@ export function RoomsIcon({ active }: NavIconProps) {
       />
       <rect
         x="14.5" y="3" width="8.5" height="8.5" rx="3"
-        fill={active ? "#F9731666" : "none"}
+        fill={active ? "#10B98166" : "none"}
         stroke={active ? "var(--warm-accent)" : "var(--warm-text-light)"}
         strokeWidth="2"
       />
       <rect
         x="3" y="14.5" width="8.5" height="8.5" rx="3"
-        fill={active ? "#F9731666" : "none"}
+        fill={active ? "#10B98166" : "none"}
         stroke={active ? "var(--warm-accent)" : "var(--warm-text-light)"}
         strokeWidth="2"
       />
       <rect
         x="14.5" y="14.5" width="8.5" height="8.5" rx="3"
-        fill={active ? "#F9731644" : "none"}
+        fill={active ? "#10B98144" : "none"}
         stroke={active ? "var(--warm-accent)" : "var(--warm-text-light)"}
         strokeWidth="2"
       />

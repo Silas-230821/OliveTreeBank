@@ -7,26 +7,26 @@
 @font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-900.ttf') format('truetype'); font-weight: 900; font-display: swap; }
 
 :root {
-  --warm-bg: #FFF9F2;
+  --warm-bg: #F4FAF6;
   --warm-card: #FFFFFF;
-  --warm-border: #F0E6D9;
-  --warm-border-subtle: #F5EDE3;
-  --warm-text: #3D2F1E;
-  --warm-text-secondary: #6B5B4A;
-  --warm-text-muted: #8A7A6A;
-  --warm-text-light: #B0A090;
-  --warm-accent: #F97316;
-  --warm-accent-light: #FFF7ED;
-  --warm-accent-hover: #EA580C;
-  --warm-bg-subtle: #FFFBF5;
-  --warm-bg-warm: #FFF9F0;
+  --warm-border: #D1FAE5;
+  --warm-border-subtle: #E7F7ED;
+  --warm-text: #173B2B;
+  --warm-text-secondary: #35604A;
+  --warm-text-muted: #5E806D;
+  --warm-text-light: #82A08F;
+  --warm-accent: #10B981;
+  --warm-accent-light: #ECFDF5;
+  --warm-accent-hover: #059669;
+  --warm-bg-subtle: #F7FDF9;
+  --warm-bg-warm: #EFFAF3;
   --warm-bg-input: #FFFFFF;
-  --warm-sidebar: #FFFFFF;
-  --warm-sidebar-active: #FFF7ED;
-  --warm-sidebar-border: #F0E6D9;
-  --warm-sidebar-user-bg: #FFF7ED;
-  --warm-sidebar-user-border: #FDE68A;
-  --warm-streak-bg: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+  --warm-sidebar: rgba(255, 255, 255, 0.88);
+  --warm-sidebar-active: #ECFDF5;
+  --warm-sidebar-border: #D1FAE5;
+  --warm-sidebar-user-bg: #F0FDF4;
+  --warm-sidebar-user-border: #BBF7D0;
+  --warm-streak-bg: linear-gradient(135deg, #FFFBEB, #FEF3C7);
   --warm-streak-border: #FDE68A;
   --warm-streak-text: #92400E;
   --warm-streak-subtext: #B45309;
@@ -43,8 +43,8 @@
   --health-green-bg: #EDF7ED;
   --health-yellow-bg: #FFF8EC;
   --health-red-bg: #FDECEC;
-  --warm-shadow: rgba(180, 150, 100, 0.1);
-  --warm-primary-shadow: rgba(249, 115, 22, 0.25);
+  --warm-shadow: rgba(16, 185, 129, 0.12);
+  --warm-primary-shadow: rgba(16, 185, 129, 0.28);
 
   /* Status badge colors */
   --status-approved-text: #15803D;
@@ -211,7 +211,7 @@ html[data-theme='night'] {
 
 body {
   font-family: 'Nunito', sans-serif;
-  background: var(--warm-bg);
+  background: linear-gradient(135deg, rgba(236, 253, 245, .72), rgba(240, 253, 250, .52), #f1f5f9);
   color: var(--warm-text);
   -webkit-font-smoothing: antialiased;
 }
@@ -234,7 +234,7 @@ body {
 
 .tq-card {
   background: var(--warm-card);
-  border-radius: 20px;
+  border-radius: 24px;
   border: 1.5px solid var(--warm-border);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -255,13 +255,13 @@ body {
   align-items: center;
   gap: 6px;
 }
-.tq-btn:hover { filter: brightness(1.05); transform: scale(1.02); }
-.tq-btn:active { transform: scale(0.97); }
+.tq-btn:hover { filter: brightness(1.04); transform: translateY(-2px); }
+.tq-btn:active { transform: translateY(2px) scale(0.98); box-shadow: none; }
 
 .tq-btn-primary {
   background: var(--warm-accent);
   color: #fff;
-  box-shadow: 0 4px 14px var(--warm-primary-shadow);
+  box-shadow: 0 5px 0 #059669, 0 10px 18px var(--warm-primary-shadow);
 }
 
 .tq-btn-secondary {
@@ -273,6 +273,79 @@ body {
   border-color: var(--warm-accent);
   color: var(--warm-accent);
 }
+
+/* Olive Tree electronic banking shell */
+.olive-topbar {
+  width: 100% !important;
+  min-height: 88px !important;
+  height: 88px;
+  padding: 0 !important;
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  background: rgba(255, 255, 255, .86) !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid var(--warm-sidebar-border) !important;
+  box-shadow: 0 8px 30px rgba(16, 185, 129, .08);
+  backdrop-filter: blur(18px);
+  z-index: 50;
+}
+.olive-brand { margin: 0 auto 0 0 !important; padding: 0 24px !important; flex: 0 0 auto; }
+.olive-tree-badge {
+  width: 46px !important; height: 46px !important; border-radius: 17px !important;
+  background: linear-gradient(135deg, #10B981, #84CC16) !important;
+  border: 1px solid rgba(255,255,255,.7) !important;
+  box-shadow: 0 0 0 5px rgba(132, 204, 22, .13), 0 7px 16px rgba(16, 185, 129, .25);
+  animation: oliveGlow 2.8s ease-in-out infinite;
+}
+.olive-brand-name { font-size: 17px !important; color: #14532D !important; white-space: nowrap; }
+.olive-brand-slogan { font-size: 9px !important; color: #5B7C65 !important; letter-spacing: .35px !important; text-transform: none !important; white-space: nowrap; }
+.olive-nav-links { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 3px !important; padding: 0 12px !important; overflow-x: auto; }
+.olive-nav-links > a > div { padding: 9px 10px !important; border-left: 0 !important; border-radius: 14px !important; gap: 7px !important; white-space: nowrap; }
+.olive-nav-links > a > div:hover { background: #ECFDF5 !important; }
+.olive-nav-links > a > div span:last-child { font-size: 12px !important; }
+.olive-nav-links svg { width: 20px; height: 20px; }
+.olive-account { padding: 0 20px 0 8px !important; flex: 0 0 auto; }
+.olive-account > div { background: transparent !important; border: 0 !important; padding: 5px 0 5px 10px !important; border-radius: 16px !important; gap: 9px !important; }
+.olive-student-toolbar { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.olive-student-name { max-width: 104px; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 900; color: var(--warm-text); }
+.olive-grade-tag { color: #166534; background: #DCFCE7; border: 1px solid #86EFAC; border-radius: 999px; padding: 3px 7px; font-size: 10px; font-weight: 900; }
+.olive-sound-toggle { width: 30px; height: 30px; border: 1px solid var(--warm-border); border-radius: 10px; background: var(--warm-bg-subtle); cursor: pointer; font-size: 14px; display: inline-grid; place-items: center; transition: transform .15s ease; }
+.olive-sound-toggle:hover { transform: translateY(-1px); }
+.olive-coin-counter {
+  color: #92400E !important; font-size: 13px !important; font-weight: 900 !important;
+  background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border: 1px solid #FDE68A;
+  border-radius: 14px; padding: 7px 10px; cursor: pointer;
+  box-shadow: 0 3px 0 #FCD34D; transition: transform .15s ease;
+  animation: coinBounce 3.4s ease-in-out infinite;
+  display: inline-flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif;
+}
+.olive-coin-counter > span { font-size: 10px; font-weight: 800; }
+.olive-coin-counter:hover { transform: translateY(-2px); }
+.olive-coin-counter:active { transform: translateY(2px); box-shadow: none; }
+.main-content { margin-left: 0 !important; margin-top: 88px; min-height: calc(100vh - 88px); background: transparent !important; }
+
+@keyframes oliveGlow { 50% { box-shadow: 0 0 0 8px rgba(132, 204, 22, .08), 0 8px 21px rgba(16, 185, 129, .34); } }
+@keyframes coinBounce { 0%, 84%, 100% { transform: translateY(0); } 90% { transform: translateY(-4px) rotate(-4deg); } 96% { transform: translateY(0) rotate(3deg); } }
+
+.quiz-feature-card { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; background: linear-gradient(120deg, #14532D, #059669 62%, #84CC16); color: #fff; border: 0; }
+.quiz-feature-icon { width: 52px; height: 52px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 18px; background: rgba(255,255,255,.16); font-size: 28px; color: #FEF3C7; }
+.quiz-feature-kicker { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 900; color: #FEF3C7; }
+.quiz-feature-card h2 { margin: 2px 0; font-size: 21px; font-weight: 900; }
+.quiz-feature-card p { margin: 0; font-size: 13px; font-weight: 700; opacity: .88; }
+.quiz-feature-card .tq-btn { margin-left: auto; flex: 0 0 auto; color: #14532D; background: #FEF3C7; box-shadow: 0 4px 0 #F59E0B; }
+.quiz-page { max-width: 680px; margin: 0 auto; }
+.quiz-eyebrow { display: flex; align-items: center; gap: 6px; color: #B45309; font-size: 13px; font-weight: 900; }
+.quiz-page h2 { margin: 10px 0 4px; color: var(--warm-text); font-size: 25px; }
+.quiz-page > p { color: var(--warm-text-muted); font-weight: 700; }
+.quiz-question { margin: 24px 0 16px; padding: 20px; border: 1px solid var(--warm-border); border-radius: 20px; background: var(--warm-bg-subtle); }
+.quiz-options { display: grid; gap: 9px; margin-top: 15px; }
+.quiz-options button { padding: 11px 14px; text-align: left; color: var(--warm-text); font: 700 13px 'Nunito', sans-serif; background: #fff; border: 1.5px solid var(--warm-border); border-radius: 13px; cursor: pointer; }
+.quiz-options button.selected { color: #047857; background: #ECFDF5; border-color: #10B981; }
+.quiz-result { margin: 12px 0; padding: 10px 12px; color: #92400E; background: #FFFBEB; border-radius: 12px; font-size: 13px; font-weight: 800; }
+.quiz-result.success { color: #166534; background: #DCFCE7; }
 
 /* ========================================
    DESIGN SYSTEM — Utility Classes
@@ -886,4 +959,38 @@ html[data-theme='night'] option {
   .mobile-overlay {
     display: none !important;
   }
+}
+
+@media (max-width: 768px) {
+  .olive-topbar.sidebar {
+    height: 66px !important;
+    min-height: 66px !important;
+    width: calc(100% - 24px) !important;
+    left: 12px !important;
+    top: 10px !important;
+    right: 12px !important;
+    border: 1px solid var(--warm-sidebar-border) !important;
+    border-radius: 20px;
+    transform: translateY(-120%) !important;
+    transition: transform .25s ease !important;
+  }
+  .olive-topbar.sidebar.mobile-open { transform: translateY(0) !important; }
+  .olive-brand { padding: 0 13px !important; }
+  .olive-tree-badge { width: 40px !important; height: 40px !important; border-radius: 14px !important; }
+  .olive-brand-name { font-size: 14px !important; }
+  .olive-brand-slogan, .olive-account > div > div:first-of-type > div:last-child { display: none !important; }
+  .olive-nav-links { display: none !important; }
+  .olive-topbar.sidebar.mobile-open .olive-nav-links {
+    display: flex !important; position: absolute; top: 58px; left: 0; right: 0;
+    padding: 8px 10px !important; background: rgba(255,255,255,.98); border: 1px solid var(--warm-sidebar-border);
+    border-radius: 0 0 18px 18px; box-shadow: 0 12px 22px rgba(16,185,129,.12); overflow-x: auto;
+  }
+  .olive-account { margin-left: auto; padding: 0 12px !important; }
+  .olive-account > div > div:first-of-type { display: flex !important; }
+  .olive-coin-counter { display: flex !important; padding: 6px 8px; }
+  .olive-student-name, .olive-grade-tag, .olive-sound-toggle { display: none; }
+  .quiz-feature-card { align-items: flex-start; flex-wrap: wrap; }
+  .quiz-feature-card .tq-btn { margin-left: 0; }
+  .main-content { margin-top: 0; padding: 84px 16px 24px !important; }
+  .hamburger-menu { top: 18px !important; left: auto !important; right: 18px !important; border-color: #BBF7D0 !important; color: #047857 !important; }
 }

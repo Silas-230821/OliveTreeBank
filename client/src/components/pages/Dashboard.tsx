@@ -129,6 +129,7 @@ interface DashboardProps {
   onRefresh?: () => void;
   onNavigateToRoom: (roomId: number) => void;
   onNavigateToActivity: () => void;
+  onNavigateToQuiz: () => void;
   onRewardRequestAction: (id: number, status: 'approved' | 'rejected') => void | Promise<void>;
   gamificationEnabled?: boolean;
   leaderboardPeriod?: 'week' | 'month' | 'quarter' | 'year';
@@ -145,6 +146,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   onRefresh,
   onNavigateToRoom,
   onNavigateToActivity,
+  onNavigateToQuiz,
   onRewardRequestAction,
   gamificationEnabled = true,
   leaderboardPeriod = 'week',
@@ -327,6 +329,16 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
         </div>
+
+        <section className="quiz-feature-card tq-card tq-card-padded">
+          <div className="quiz-feature-icon">✦</div>
+          <div>
+            <div className="quiz-feature-kicker"><CoinIcon /> Quiz for Olive Coins</div>
+            <h2>答题淘金币</h2>
+            <p>用一题生活小挑战，赢取你的橄榄币奖励。</p>
+          </div>
+          <button className="tq-btn tq-btn-primary" onClick={onNavigateToQuiz}>开始答题</button>
+        </section>
 
         {/* Today's Quests Card — full width, sections: Ready to Complete / On Demand */}
         {isVisible('todaysQuests') && <div className="tq-card tq-card-padded">
