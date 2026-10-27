@@ -7,7 +7,7 @@
 @font-face { font-family: 'Nunito'; src: url('./assets/fonts/Nunito-900.ttf') format('truetype'); font-weight: 900; font-display: swap; }
 
 :root {
-  --warm-bg: #F4FAF6;
+  --warm-bg: #F4F7F4;
   --warm-card: #FFFFFF;
   --warm-border: #D1FAE5;
   --warm-border-subtle: #E7F7ED;
@@ -305,6 +305,8 @@ body {
 .olive-nav-links { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 3px !important; padding: 0 12px !important; overflow-x: auto; }
 .olive-nav-links > a > div { padding: 9px 10px !important; border-left: 0 !important; border-radius: 14px !important; gap: 7px !important; white-space: nowrap; }
 .olive-nav-links > a > div:hover { background: #ECFDF5 !important; }
+.olive-nav-links > a > div { position: relative; }
+.olive-nav-links > a > div:hover::after { content: ''; position: absolute; inset: 2px; z-index: -1; border-radius: 12px; background: linear-gradient(120deg, rgba(16,185,129,.12), rgba(132,204,22,.18)); }
 .olive-nav-links > a > div span:last-child { font-size: 12px !important; }
 .olive-nav-links svg { width: 20px; height: 20px; }
 .olive-account { padding: 0 20px 0 8px !important; flex: 0 0 auto; }
@@ -313,6 +315,7 @@ body {
 .olive-student-name { max-width: 104px; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 900; color: var(--warm-text); }
 .olive-grade-tag { color: #166534; background: #DCFCE7; border: 1px solid #86EFAC; border-radius: 999px; padding: 3px 7px; font-size: 10px; font-weight: 900; }
 .olive-sound-toggle { width: 30px; height: 30px; border: 1px solid var(--warm-border); border-radius: 10px; background: var(--warm-bg-subtle); cursor: pointer; font-size: 14px; display: inline-grid; place-items: center; transition: transform .15s ease; }
+.olive-language-switcher { height: 30px; border: 1px solid var(--warm-border); border-radius: 10px; background: var(--warm-bg-subtle); color: var(--warm-text-secondary); padding: 0 5px; font: 800 10px 'Nunito', sans-serif; cursor: pointer; }
 .olive-sound-toggle:hover { transform: translateY(-1px); }
 .olive-coin-counter {
   color: #92400E !important; font-size: 13px !important; font-weight: 900 !important;
@@ -326,6 +329,9 @@ body {
 .olive-coin-counter:hover { transform: translateY(-2px); }
 .olive-coin-counter:active { transform: translateY(2px); box-shadow: none; }
 .main-content { margin-left: 0 !important; margin-top: 88px; min-height: calc(100vh - 88px); background: transparent !important; }
+
+.bank-name-carousel { animation: bankNameFade 3.2s ease both; }
+@keyframes bankNameFade { 0% { opacity: 0; transform: translateY(5px); } 14%, 82% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-4px); } }
 
 @keyframes oliveGlow { 50% { box-shadow: 0 0 0 8px rgba(132, 204, 22, .08), 0 8px 21px rgba(16, 185, 129, .34); } }
 @keyframes coinBounce { 0%, 84%, 100% { transform: translateY(0); } 90% { transform: translateY(-4px) rotate(-4deg); } 96% { transform: translateY(0) rotate(3deg); } }
@@ -480,6 +486,30 @@ body {
   grid-column: 1 / -1;
 }
 
+/* Dashboard structure: a fixed reading rail, flexible task canvas, and an always useful side rail. */
+.dashboard-journey { display: grid; grid-template-columns: minmax(110px, 15%) minmax(0, 1fr); gap: 24px; align-items: start; }
+.dashboard-timeline { position: sticky; top: 116px; min-height: 260px; padding: 12px 0; }
+.timeline-path { position: absolute; left: 4px; top: 19px; width: 18px; height: 226px; overflow: visible; }
+.timeline-path path { fill: none; stroke: #BBE4CC; stroke-width: 2; stroke-linecap: round; transition: stroke .25s ease; }
+.dashboard-timeline a { position: relative; display: flex; align-items: center; gap: 10px; margin: 0 0 24px; color: var(--warm-text-light); text-decoration: none; font-size: 11px; font-weight: 800; transition: color .25s ease; }
+.dashboard-timeline a span { width: 10px; height: 10px; border: 2px solid #A7D8B7; background: var(--warm-bg); border-radius: 50%; z-index: 1; transition: all .25s ease; }
+.dashboard-timeline a.active { color: #047857; }
+.dashboard-timeline a.active span { background: #047857; border-color: #047857; box-shadow: 0 0 0 5px rgba(16,185,129,.14); }
+.dashboard-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 29%); gap: 20px; min-width: 0; }
+.dashboard-grid { min-width: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dashboard-right-rail { display: grid; gap: 16px; align-content: start; position: sticky; top: 108px; }
+.tree-hole-card { background: linear-gradient(145deg, #fff, #F2F9F2); }
+.tree-hole-title { display: flex; gap: 10px; align-items: center; margin-bottom: 13px; }
+.tree-hole-title > span { font-size: 25px; }
+.tree-hole-title strong, .badge-wall h3 { display: block; color: #14532D; font-size: 15px; font-weight: 900; }
+.tree-hole-title small, .badge-wall small { display: block; margin-top: 2px; color: var(--warm-text-light); font-size: 11px; font-weight: 700; }
+.tree-hole-card textarea { box-sizing: border-box; width: 100%; min-height: 76px; resize: vertical; padding: 10px; border: 1px solid #CDE8D5; border-radius: 12px; background: #fff; color: var(--warm-text); font: 600 12px 'Nunito', sans-serif; outline-color: #059669; }
+.tree-hole-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; color: var(--warm-text-light); font-size: 10px; font-weight: 700; }
+.tree-hole-actions .tq-btn { padding: 7px 10px; font-size: 11px; box-shadow: none; }
+.olive-leaf { margin-top: 10px; color: #047857; font-size: 11px; font-weight: 800; animation: leafFall .8s ease both; }
+@keyframes leafFall { from { opacity: 0; transform: translate(-8px, -16px) rotate(-22deg); } to { opacity: 1; transform: translate(0, 0) rotate(10deg); } }
+.badge-wall h3 { margin: 0 0 12px; }.badge-wall > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }.badge-wall span { display: grid; place-items: center; aspect-ratio: 1; border-radius: 12px; color: #047857; background: #ECFDF5; border: 1px solid #D1FAE5; font-size: 20px; }
+
 /* Settings grid — via CSS class, not inline */
 .settings-grid {
   display: grid;
@@ -528,6 +558,9 @@ html[data-theme='night'] option {
     padding: 10px 16px;
     font-size: 14px;
   }
+  .dashboard-journey { grid-template-columns: 86px minmax(0, 1fr); gap: 16px; }
+  .dashboard-content { grid-template-columns: 1fr; }
+  .dashboard-right-rail { position: static; grid-template-columns: 1fr 1fr; }
 
 }
 
@@ -624,6 +657,9 @@ html[data-theme='night'] option {
   .dashboard-grid {
     grid-template-columns: 1fr !important;
   }
+  .dashboard-journey { display: block; }
+  .dashboard-timeline { display: none; }
+  .dashboard-right-rail { grid-template-columns: 1fr; margin-top: 16px; }
 
   .page-header {
     flex-direction: column !important;
@@ -988,7 +1024,7 @@ html[data-theme='night'] option {
   .olive-account { margin-left: auto; padding: 0 12px !important; }
   .olive-account > div > div:first-of-type { display: flex !important; }
   .olive-coin-counter { display: flex !important; padding: 6px 8px; }
-  .olive-student-name, .olive-grade-tag, .olive-sound-toggle { display: none; }
+  .olive-student-name, .olive-grade-tag, .olive-sound-toggle, .olive-language-switcher { display: none; }
   .quiz-feature-card { align-items: flex-start; flex-wrap: wrap; }
   .quiz-feature-card .tq-btn { margin-left: 0; }
   .main-content { margin-top: 0; padding: 84px 16px 24px !important; }

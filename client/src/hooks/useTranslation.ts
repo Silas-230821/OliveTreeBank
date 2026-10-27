@@ -12,7 +12,8 @@ const translations: Record<string, TranslationData> = { en, fr, de, es, it, nl, 
 
 export function useTranslation(language: string = 'zh') {
   const lang = translations[language] || translations.zh;
-  const fallback = translations.zh;
+  // Chinese is the default, while incomplete non-Chinese packs fall back to English.
+  const fallback = language === 'zh' ? translations.zh : translations.en;
 
   function normalize(value: string): string {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');

@@ -1,21 +1,11 @@
-import { useState, type MouseEvent } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { HomeIcon, RoomsIcon, TrophyIcon, CalendarIcon, ActivityIcon, AchievementsIcon, SettingsIcon, RewardsIcon } from '../icons/NavIcons';
 import { CoinIcon } from '../icons/UIIcons';
 import { UserAvatar } from '../shared/UserAvatar';
+import { OliveTreeLogo } from '../shared/OliveTreeLogo';
 import { useTranslation } from '../../hooks/useTranslation';
 import type { User } from '../../hooks/useAuth';
-
-function OliveTreeIcon() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <path d="M16 27V15M16 20C11.4 18.9 9.8 15.8 10 12.5M16 21.5C20.6 20.2 22.4 16.8 22 13" stroke="#FFFEF7" strokeWidth="2.2" strokeLinecap="round" />
-      <circle cx="10.5" cy="10.5" r="4" fill="#D9F99D" /><circle cx="16" cy="7.5" r="4.3" fill="#ECFCCB" />
-      <circle cx="22" cy="10.8" r="4" fill="#BEF264" /><circle cx="10.5" cy="15.5" r="3.3" fill="#A3E635" />
-      <circle cx="22" cy="15.5" r="3.3" fill="#D9F99D" /><path d="M10.5 27H21.5" stroke="#FFFEF7" strokeWidth="2.2" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 interface SidebarProps {
   user: User;
@@ -24,12 +14,13 @@ interface SidebarProps {
   gamificationEnabled?: boolean;
   collapsed?: boolean;
   onToggle?: () => void;
+  onLanguageChange?: (language: string) => void;
 }
 
 const navItems = [
-  { to: '/quiz', label: 'Quiz', text: 'Quiz', Icon: TrophyIcon },
-  { to: '/rewards', label: 'Rewards', text: 'Shop', Icon: RewardsIcon },
-  { to: '/rooms', label: 'Rooms', text: 'My Room / Shelves', Icon: RoomsIcon },
+  { to: '/quiz', label: 'Quiz', Icon: TrophyIcon },
+  { to: '/rewards', label: 'Rewards', Icon: RewardsIcon },
+  { to: '/rooms', label: 'Rooms', Icon: RoomsIcon },
   { to: '/', label: 'Home', Icon: HomeIcon },
   { to: '/leaderboard', label: 'Board', Icon: TrophyIcon },
   { to: '/calendar', label: 'Calendar', Icon: CalendarIcon },
@@ -40,10 +31,16 @@ const navItems = [
 
 const GAMIFICATION_ROUTES = new Set(['/leaderboard', '/rewards', '/achievements']);
 
-export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabled = true, onToggle }: SidebarProps) {
+export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabled = true, onToggle, onLanguageChange }: SidebarProps) {
   const navigate = useNavigate();
   const { t } = useTranslation(user.language);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('olive-sound-enabled') !== 'false');
+  const bankNames = ['橄榄树数字银行', 'Olive Tree Digital Bank', 'Olivenbaum Digitalbank'];
+  const [bankNameIndex, setBankNameIndex] = useState(0);
+  useEffect(() => {
+    const timer = window.setInterval(() => setBankNameIndex((index) => (index + 1) % bankNames.length), 3200);
+    return () => window.clearInterval(timer);
+  }, []);
   const grade = Math.min(6, Math.max(1, Number((user as User & { grade?: number }).grade) || 1));
   // A horizontal header should always keep its navigation visible on desktop.
   // The original props remain accepted for backwards-compatible app-shell wiring.
@@ -129,10 +126,10 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0,
               }}>
-                <OliveTreeIcon />
+                <OliveTreeLogo />
               </div>
               <div style={{ flex: 1 }}>
-                <div className="olive-brand-name" style={{ fontSize: 19, fontWeight: 900, color: 'var(--warm-text)', letterSpacing: -0.5 }}>橄榄树电子银行</div>
+                <div className="olive-brand-name bank-name-carousel" key={bankNameIndex} style={{ fontSize: 19, fontWeight: 900, color: 'var(--warm-text)', letterSpacing: -0.5 }}>{bankNames[bankNameIndex]}</div>
                 <div className="olive-brand-slogan" style={{ fontSize: 10, color: 'var(--warm-text-light)', fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase' }}>
                   聆听顺服 · 彼此相爱 · 尽力去做
                 </div>
@@ -207,7 +204,7 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
                     <span style={{
                       fontSize: 14, fontWeight: isActive ? 800 : 600,
                       color: isActive ? 'var(--warm-accent)' : 'var(--warm-text-muted)',
-                    }}>{item.text || t(`nav.${item.label.toLowerCase()}`)}</span>
+                    }}>{t(`nav.${item.label.toLowerCase()}`)}</span>
                   )}
                 </div>
               )}
@@ -236,6 +233,9 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
             />
             {!effectiveCollapsed && (
               <div className="olive-student-toolbar">
+                <select className="olive-language-switcher" value={user.language} onClick={(event) => event.stopPropagation()} onChange={(event) => onLanguageChange?.(event.target.value)} aria-label="Language">
+                  <option value="zh">中文</option><option value="en">EN</option><option value="fr">FR</option><option value="de">DE</option><option value="es">ES</option><option value="it">IT</option><option value="nl">NL</option>
+                </select>
                 <span className="olive-student-name">{user.displayName}</span>
                 <span className="olive-grade-tag">G{grade}</span>
                 <button className="olive-sound-toggle" onClick={toggleSound} aria-label={soundEnabled ? 'Mute sound effects' : 'Enable sound effects'} title={soundEnabled ? '声音已开启' : '声音已关闭'}>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { SparkleIcon } from '../icons/UIIcons';
+import { OliveTreeLogo } from '../shared/OliveTreeLogo';
 import { useTranslation } from '../../hooks/useTranslation';
 import { api } from '../../hooks/useApi';
 import UserAvatar from '../shared/UserAvatar';
@@ -33,6 +33,8 @@ export function Login({ onLogin, onSwitchToRegister }: LoginProps) {
   const [registrationEnabled, setRegistrationEnabled] = useState(true);
   const [avatarUsers, setAvatarUsers] = useState<LoginUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const bankNames = ['橄榄树数字银行', 'Olive Tree Digital Bank', 'Banco Digital Olivo', 'Banque numérique Olivier'];
+  const [bankNameIndex, setBankNameIndex] = useState(0);
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -42,6 +44,11 @@ export function Login({ onLogin, onSwitchToRegister }: LoginProps) {
     api.getLoginAvatars()
       .then((users) => setAvatarUsers(users))
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setBankNameIndex((index) => (index + 1) % bankNames.length), 3200);
+    return () => window.clearInterval(timer);
   }, []);
 
   const handleAvatarClick = (user: LoginUser) => {
@@ -79,9 +86,9 @@ export function Login({ onLogin, onSwitchToRegister }: LoginProps) {
             border: '1.5px solid var(--warm-streak-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <SparkleIcon />
+            <OliveTreeLogo size={34} />
           </div>
-          <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--warm-text)', margin: 0 }}>TidyQuest</h1>
+          <h1 className="bank-name-carousel" key={bankNameIndex} style={{ fontSize: 24, fontWeight: 900, color: 'var(--warm-text)', margin: 0 }}>{bankNames[bankNameIndex]}</h1>
           <p style={{ fontSize: 12, color: 'var(--warm-text-light)', fontWeight: 600, marginTop: 4 }}>{t('auth.welcomeBack')}</p>
           <select
             value={authLanguage}

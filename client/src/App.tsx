@@ -166,7 +166,7 @@ function AppContent() {
   }, [theme]);
 
   useEffect(() => {
-    document.title = '橄榄树电子银行';
+    document.title = '橄榄树数字银行';
   }, []);
 
   useEffect(() => {
@@ -350,6 +350,10 @@ function AppContent() {
         onClose={() => setIsMobileSidebarOpen(false)}
         gamificationEnabled={gamificationEnabled}
         collapsed={sidebarCollapsed}
+        onLanguageChange={async (language) => {
+          await api.updateProfile(user.id, { language });
+          await refreshUser();
+        }}
       />
 
       <main style={{ marginLeft: sidebarCollapsed ? 60 : 240, flex: 1, padding: '28px 36px', maxWidth: 1320, backgroundColor: 'var(--warm-bg)', transition: 'margin-left 0.3s ease' }} className="main-content">
@@ -406,7 +410,7 @@ function AppContent() {
           } />
           <Route path="/quiz" element={
             <>
-              <PageHeader title="Quiz for Olive Coins" subtitle="答题淘金币" user={user} onCoinsClick={() => navigate('/rewards')} onStreakClick={() => navigate('/achievements')} onPointsClick={handlePointsClick} userPoints={myPoints} pointsPeriodLabel={pointsPeriodLabel} gamificationEnabled={gamificationEnabled} />
+              <PageHeader title="答题挖金矿" subtitle="Mine for Olive Coins" user={user} onCoinsClick={() => navigate('/rewards')} onStreakClick={() => navigate('/achievements')} onPointsClick={handlePointsClick} userPoints={myPoints} pointsPeriodLabel={pointsPeriodLabel} gamificationEnabled={gamificationEnabled} />
               <Quiz />
             </>
           } />

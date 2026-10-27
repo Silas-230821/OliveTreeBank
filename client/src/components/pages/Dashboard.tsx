@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import HealthBar from '../shared/HealthBar';
 import RingGauge from '../shared/RingGauge';
 import UserAvatar from '../shared/UserAvatar';
@@ -181,6 +181,10 @@ const Dashboard: React.FC<DashboardProps> = ({
   const onDemandTasks = filterQuests(allOnDemandTasks);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showCustomize, setShowCustomize] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  const [wish, setWish] = useState('');
+  const [wishSent, setWishSent] = useState(false);
+  const dashboardRef = useRef<HTMLDivElement>(null);
 
   const ALL_CARDS = [
     { id: 'todaysQuests', label: t('dashboard.todaysQuests') },
@@ -203,6 +207,17 @@ const Dashboard: React.FC<DashboardProps> = ({
   useEffect(() => {
     localStorage.setItem(LS_KEY, JSON.stringify([...hiddenCards]));
   }, [hiddenCards]);
+  useEffect(() => {
+    const root = dashboardRef.current;
+    if (!root || !('IntersectionObserver' in window)) return;
+    const sections = [...root.querySelectorAll<HTMLElement>('.dashboard-grid > *')];
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActiveSection(Math.min(3, Math.floor(sections.indexOf(visible.target as HTMLElement) / Math.max(1, Math.ceil(sections.length / 4)))));
+    }, { threshold: [0.5] });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [hiddenCards, data]);
   const isVisible = (id: string) => !hiddenCards.has(id);
   const toggleCard = (id: string) => setHiddenCards(prev => {
     const next = new Set(prev);
@@ -260,7 +275,19 @@ const Dashboard: React.FC<DashboardProps> = ({
       </div>
     )}
 
-    <div className="dashboard-grid">
+    <div className="dashboard-journey" ref={dashboardRef}>
+      <aside className="dashboard-timeline" aria-label="页面进度">
+        <svg className="timeline-path" viewBox="0 0 24 250" preserveAspectRatio="none" aria-hidden="true"><path d="M12 12V238" /></svg>
+        {['概览', '今日任务', '我的空间', '成长记录'].map((label, index) => (
+          <a key={label} href={`#dashboard-section-${index}`} className={activeSection === index ? 'active' : ''} onClick={(event) => {
+            event.preventDefault();
+            const targets = dashboardRef.current?.querySelectorAll<HTMLElement>('.dashboard-grid > *');
+            targets?.[Math.floor((targets.length - 1) * index / 3)]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }}><span />{label}</a>
+        ))}
+      </aside>
+      <div className="dashboard-content">
+      <div className="dashboard-grid">
 
         {/* House Health Card */}
         <div
@@ -917,6 +944,21 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           ))}
         </div>}
+      </div>
+      <aside className="dashboard-right-rail">
+        <section className="tree-hole-card tq-card tq-card-padded">
+          <div className="tree-hole-title"><span>🌿</span><div><strong>{t('nav.treeHole')}</strong><small>写下今天的小心愿</small></div></div>
+          <textarea value={wish} maxLength={80} onChange={(event) => { setWish(event.target.value); setWishSent(false); }} placeholder="例如：周末想和家人去公园…" aria-label={t('nav.treeHole')} />
+          <div className="tree-hole-actions"><span>{wish.length}/80</span><button className="tq-btn tq-btn-primary" disabled={!wish.trim()} onClick={() => { setWishSent(true); setWish(''); }}>投入树洞</button></div>
+          {wishSent && <div className="olive-leaf" role="status">🍃 心愿已轻轻落在树下</div>}
+        </section>
+        <section className="tq-card tq-card-padded badge-wall">
+          <h3>🏅 成长徽章墙</h3>
+          <div>{['★', '✦', '◆', '✿', '●', '✧'].map((badge, index) => <span key={index}>{badge}</span>)}</div>
+          <small>完成任务，点亮更多徽章</small>
+        </section>
+      </aside>
+      </div>
     </div>
     {adminModalQuest && (
       <AdminCompleteModal
