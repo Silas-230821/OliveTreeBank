@@ -9,6 +9,12 @@ import { getHealthColor } from '../../utils/health';
 import { useTranslation } from '../../hooks/useTranslation';
 import { AdminCompleteModal } from '../shared/AdminCompleteModal';
 import { api } from '../../hooks/useApi';
+import { Quiz } from './Quiz';
+import { Rewards } from './Rewards';
+import { RoomsList } from './RoomsList';
+import { Leaderboard } from './Leaderboard';
+import { Calendar } from './Calendar';
+import { Achievements } from './Achievements';
 
 /* ── Types ── */
 
@@ -129,10 +135,23 @@ interface DashboardProps {
   onRefresh?: () => void;
   onNavigateToRoom: (roomId: number) => void;
   onNavigateToActivity: () => void;
-  onNavigateToQuiz: () => void;
+  spaceRooms: React.ComponentProps<typeof RoomsList>['rooms'];
+  rewards: React.ComponentProps<typeof Rewards>['rewards'];
+  rewardRedemptions: React.ComponentProps<typeof Rewards>['mine'];
+  onCreateRoom: React.ComponentProps<typeof RoomsList>['onCreateRoom'];
+  onDeleteRoom: React.ComponentProps<typeof RoomsList>['onDeleteRoom'];
+  onAssignRoom: React.ComponentProps<typeof RoomsList>['onAssignRoom'];
+  onRenameRoom: React.ComponentProps<typeof RoomsList>['onRenameRoom'];
+  onRedeemReward: React.ComponentProps<typeof Rewards>['onRedeem'];
+  onCancelRedemption: React.ComponentProps<typeof Rewards>['onCancel'];
   onRewardRequestAction: (id: number, status: 'approved' | 'rejected') => void | Promise<void>;
   gamificationEnabled?: boolean;
   leaderboardPeriod?: 'week' | 'month' | 'quarter' | 'year';
+  leaderboard?: React.ComponentProps<typeof Leaderboard>['users'];
+  onLeaderboardPeriodChange?: React.ComponentProps<typeof Leaderboard>['onPeriodChange'];
+  completions?: React.ComponentProps<typeof Calendar>['completions'];
+  calendarTasks?: React.ComponentProps<typeof Calendar>['tasks'];
+  achievementsData?: React.ComponentProps<typeof Achievements>['data'];
 }
 
 /* ── Component ── */
@@ -146,10 +165,23 @@ const Dashboard: React.FC<DashboardProps> = ({
   onRefresh,
   onNavigateToRoom,
   onNavigateToActivity,
-  onNavigateToQuiz,
+  spaceRooms,
+  rewards,
+  rewardRedemptions,
+  onCreateRoom,
+  onDeleteRoom,
+  onAssignRoom,
+  onRenameRoom,
+  onRedeemReward,
+  onCancelRedemption,
   onRewardRequestAction,
   gamificationEnabled = true,
   leaderboardPeriod = 'week',
+  leaderboard = [],
+  onLeaderboardPeriodChange = () => {},
+  completions = [],
+  calendarTasks = [],
+  achievementsData = null,
 }) => {
   const { taskName, roomDisplayName, timeAgo, t } = useTranslation(language);
   const { houseHealth, rooms, todaysQuests, nextTasks, readyToComplete, scheduledUpcoming, onDemandQuests, completedToday = [], myGoal, childrenGoals = [], pendingRewardRequests = [], currentUser, recentActivity, badges } = data;
@@ -210,10 +242,12 @@ const Dashboard: React.FC<DashboardProps> = ({
   useEffect(() => {
     const root = dashboardRef.current;
     if (!root || !('IntersectionObserver' in window)) return;
-    const sections = [...root.querySelectorAll<HTMLElement>('.dashboard-grid > *')];
+    const sections = ['today-section', 'quiz-section', 'shop-section', 'space-section', 'leaderboard-section', 'calendar-section', 'achievements-section', 'treehole-section']
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => !!section);
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActiveSection(Math.min(3, Math.floor(sections.indexOf(visible.target as HTMLElement) / Math.max(1, Math.ceil(sections.length / 4)))));
+      if (visible) setActiveSection(sections.indexOf(visible.target as HTMLElement));
     }, { threshold: [0.5] });
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
@@ -241,6 +275,15 @@ const Dashboard: React.FC<DashboardProps> = ({
   const coinsSortedFamily = [...family].sort((a, b) => b.coins - a.coins);
   const todayIso = new Date().toISOString().slice(0, 10);
   const streakDoneToday = currentUser.lastActiveDate === todayIso;
+
+  useEffect(() => {
+    const sectionId = window.location.hash.slice(1);
+    if (!sectionId) return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const healthMessage =
     houseHealth >= 70
@@ -278,11 +321,10 @@ const Dashboard: React.FC<DashboardProps> = ({
     <div className="dashboard-journey" ref={dashboardRef}>
       <aside className="dashboard-timeline" aria-label="页面进度">
         <svg className="timeline-path" viewBox="0 0 24 250" preserveAspectRatio="none" aria-hidden="true"><path d="M12 12V238" /></svg>
-        {['概览', '今日任务', '我的空间', '成长记录'].map((label, index) => (
-          <a key={label} href={`#dashboard-section-${index}`} className={activeSection === index ? 'active' : ''} onClick={(event) => {
+        {[['today-section', '今日概览'], ['quiz-section', '开发橄榄油'], ['shop-section', '心愿商店'], ['space-section', '我的空间'], ['leaderboard-section', '排行榜'], ['calendar-section', '日历'], ['achievements-section', '我的勋章'], ['treehole-section', '心愿树洞']].map(([id, label], index) => (
+          <a key={id} href={`#${id}`} className={activeSection === index ? 'active' : ''} onClick={(event) => {
             event.preventDefault();
-            const targets = dashboardRef.current?.querySelectorAll<HTMLElement>('.dashboard-grid > *');
-            targets?.[Math.floor((targets.length - 1) * index / 3)]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }}><span />{label}</a>
         ))}
       </aside>
@@ -291,7 +333,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
         {/* House Health Card */}
         <div
-          className="tq-card tq-card-padded dashboard-hero"
+          className="tq-card tq-card-padded dashboard-hero today-family-board"
+          id="today-section"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -315,7 +358,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 marginBottom: 6,
               }}
             >
-              {t('dashboard.houseHealth')}
+              家庭状态看板
             </div>
             <div
               style={{
@@ -357,18 +400,12 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        <section className="quiz-feature-card tq-card tq-card-padded">
-          <div className="quiz-feature-icon">✦</div>
-          <div>
-            <div className="quiz-feature-kicker"><CoinIcon /> Quiz for Olive Coins</div>
-            <h2>答题淘金币</h2>
-            <p>用一题生活小挑战，赢取你的橄榄币奖励。</p>
-          </div>
-          <button className="tq-btn tq-btn-primary" onClick={onNavigateToQuiz}>开始答题</button>
+        <section id="quiz-section" className="quiz-dashboard-section">
+          <Quiz />
         </section>
 
         {/* Today's Quests Card — full width, sections: Ready to Complete / On Demand */}
-        {isVisible('todaysQuests') && <div className="tq-card tq-card-padded">
+        {isVisible('todaysQuests') && <div className="tq-card tq-card-padded overview-daily-tasks">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--warm-text)', margin: 0 }}>
               {t('dashboard.todaysQuests')}
@@ -486,7 +523,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>}
 
         {/* Scheduled Card — upcoming tasks not yet due */}
-        {isVisible('scheduled') && scheduledTasks.length > 0 && (
+        {false && isVisible('scheduled') && scheduledTasks.length > 0 && (
           <div className="tq-card tq-card-padded">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--warm-text)', margin: 0 }}>
@@ -517,8 +554,8 @@ const Dashboard: React.FC<DashboardProps> = ({
         )}
 
         {/* Completed Today Card */}
-        {isVisible('completedToday') && completedToday.length > 0 && (
-          <div className="tq-card tq-card-padded">
+        {isVisible('completedToday') && (
+          <div className="tq-card tq-card-padded overview-completed-tasks">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--warm-text)', margin: 0 }}>
                 {t('dashboard.completedToday')}
@@ -551,7 +588,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         )}
 
       {/* ── Rooms ── */}
-      {isVisible('rooms') && <div className="tq-card tq-card-padded">
+      {false && isVisible('rooms') && <div className="tq-card tq-card-padded">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--warm-text)', margin: 0 }}>
             {t('nav.rooms')}
@@ -629,7 +666,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       {/* ── Widgets ── */}
         {/* Streak Card */}
         {gamificationEnabled && isVisible('streak') && <div
-          className="tq-card tq-card-padded"
+          className="tq-card tq-card-padded overview-streak-card"
           style={{
             background: 'var(--warm-streak-bg)',
             borderColor: 'var(--warm-streak-border)',
@@ -701,9 +738,16 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>}
 
-        {gamificationEnabled && isVisible('coins') && <div className="tq-card tq-card-padded">
+        {gamificationEnabled && <div className="tq-card tq-card-padded weekly-mvp-card overview-mvp-card">
+          <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--warm-text-light)', letterSpacing: 1, textTransform: 'uppercase' }}>本周 MVP</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+            <span style={{ fontSize: 30 }}>🏆</span><div><strong style={{ display: 'block', color: 'var(--warm-text)' }}>{sortedFamily[0]?.displayName || '等待挑战者'}</strong><small style={{ color: 'var(--warm-text-light)', fontWeight: 700 }}>本周最闪耀的橄榄树守护者</small></div>
+          </div>
+        </div>}
+
+        {false && gamificationEnabled && isVisible('coins') && <div className="tq-card tq-card-padded">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--warm-text)' }}>{t('dashboard.coinsStatusTitle')}</div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--warm-text)' }}>橄榄状态</div>
             <span style={{ fontSize: 10, fontWeight: 800, borderRadius: 999, padding: '3px 8px', backgroundColor: 'var(--warm-accent-light)', color: 'var(--warm-accent)', border: '1px solid var(--warm-accent)' }}>
               {coinsSortedFamily.length}
             </span>
@@ -739,7 +783,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
         )}
 
-        {gamificationEnabled && isVisible('childrenGoals') && currentUser.role === 'admin' && childrenGoals.length > 0 && (
+        {false && gamificationEnabled && isVisible('childrenGoals') && currentUser.role === 'admin' && childrenGoals.length > 0 && (
           <div className="tq-card tq-card-padded">
             <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--warm-text)', marginBottom: 8 }}>{t('dashboard.childrenGoals')}</div>
             <div style={{ display: 'grid', gap: 8 }}>
@@ -761,7 +805,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
         )}
 
-        {gamificationEnabled && isVisible('rewardRequests') && currentUser.role === 'admin' && (
+        {false && gamificationEnabled && isVisible('rewardRequests') && currentUser.role === 'admin' && (
           <div className="tq-card tq-card-padded">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--warm-text)' }}>{t('dashboard.rewardRequestsTitle')}</div>
@@ -802,7 +846,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         )}
 
         {/* Mini Leaderboard */}
-        {gamificationEnabled && isVisible('leaderboard') && <div className="tq-card tq-card-padded">
+        {false && gamificationEnabled && isVisible('leaderboard') && <div className="tq-card tq-card-padded">
           <h3
             style={{
               fontSize: 14,
@@ -886,7 +930,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>}
 
         {/* Recent Activity */}
-        {isVisible('recentActivity') && <div className="tq-card tq-card-padded">
+        {isVisible('recentActivity') && <div className="tq-card tq-card-padded overview-recent-activity">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <h3
               style={{
@@ -945,19 +989,52 @@ const Dashboard: React.FC<DashboardProps> = ({
           ))}
         </div>}
       </div>
-      <aside className="dashboard-right-rail">
-        <section className="tree-hole-card tq-card tq-card-padded">
+      <section id="shop-section" className="dashboard-stream-section">
+        <Rewards
+          language={language}
+          rewards={rewards}
+          mine={rewardRedemptions}
+          userCoins={currentUser.coins}
+          isAdmin={currentUser.role === 'admin'}
+          pendingRequests={pendingRewardRequests}
+          onRewardRequestAction={async (id, status) => { await onRewardRequestAction(id, status); }}
+          onRedeem={onRedeemReward}
+          onCancel={onCancelRedemption}
+        />
+      </section>
+      <section id="space-section" className="dashboard-stream-section space-stream-section">
+        <RoomsList
+          rooms={spaceRooms}
+          language={language}
+          isAdmin={currentUser.role === 'admin'}
+          users={users}
+          onSelectRoom={onNavigateToRoom}
+          onCreateRoom={onCreateRoom}
+          onDeleteRoom={onDeleteRoom}
+          onAssignRoom={onAssignRoom}
+          onRenameRoom={onRenameRoom}
+        />
+      </section>
+      <section id="leaderboard-section" className="dashboard-feature-section">
+        <div className="dashboard-section-heading"><h2>排行榜</h2><p>看看本周期的成长足迹</p></div>
+        <Leaderboard users={leaderboard.slice(0, 7)} language={language} period={leaderboardPeriod} onPeriodChange={onLeaderboardPeriodChange} />
+      </section>
+      <section id="calendar-section" className="dashboard-feature-section">
+        <div className="dashboard-section-heading"><h2>日历</h2><p>本月完成与待办一目了然</p></div>
+        <Calendar completions={completions} tasks={calendarTasks} language={language} />
+      </section>
+      <section id="achievements-section" className="dashboard-feature-section">
+        <div className="dashboard-section-heading"><h2>我的勋章</h2><p>收集每一份坚持与进步</p></div>
+        <Achievements data={achievementsData} language={language} />
+      </section>
+      <section id="treehole-section" className="dashboard-feature-section treehole-stream-section">
+        <div className="tree-hole-card tq-card tq-card-padded">
           <div className="tree-hole-title"><span>🌿</span><div><strong>{t('nav.treeHole')}</strong><small>写下今天的小心愿</small></div></div>
           <textarea value={wish} maxLength={80} onChange={(event) => { setWish(event.target.value); setWishSent(false); }} placeholder="例如：周末想和家人去公园…" aria-label={t('nav.treeHole')} />
           <div className="tree-hole-actions"><span>{wish.length}/80</span><button className="tq-btn tq-btn-primary" disabled={!wish.trim()} onClick={() => { setWishSent(true); setWish(''); }}>投入树洞</button></div>
           {wishSent && <div className="olive-leaf" role="status">🍃 心愿已轻轻落在树下</div>}
-        </section>
-        <section className="tq-card tq-card-padded badge-wall">
-          <h3>🏅 成长徽章墙</h3>
-          <div>{['★', '✦', '◆', '✿', '●', '✧'].map((badge, index) => <span key={index}>{badge}</span>)}</div>
-          <small>完成任务，点亮更多徽章</small>
-        </section>
-      </aside>
+        </div>
+      </section>
       </div>
     </div>
     {adminModalQuest && (

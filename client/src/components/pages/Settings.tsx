@@ -56,6 +56,7 @@ interface SettingsProps {
   onAddMember: (data: { username: string; password: string; displayName: string; role: 'child' }) => Promise<void>;
   onDeleteUser: (userId: number) => Promise<void>;
   onUpdateMemberProfile: (userId: number, data: { avatarType?: string; avatarColor?: string; avatarPreset?: string | null; language?: string }) => Promise<void>;
+  onUpdatePreferences?: (data: { language?: string }) => Promise<void>;
   onChangePassword: (userId: number, data: { currentPassword?: string; newPassword: string }) => Promise<void>;
   coinsByEffort: Record<number, number>;
   onSaveCoinsByEffort: (values: Record<number, number>) => Promise<void>;
@@ -80,6 +81,7 @@ export function Settings({
   onAddMember,
   onDeleteUser,
   onUpdateMemberProfile,
+  onUpdatePreferences,
   onChangePassword,
   coinsByEffort,
   onSaveCoinsByEffort,
@@ -141,6 +143,7 @@ export function Settings({
   const [ntfyTopic, setNtfyTopic] = useState('');
   const [ntfyToken, setNtfyToken] = useState('');
   const [ntfyHasToken, setNtfyHasToken] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('olive-sound-enabled') !== 'false');
 
   const localeMap: Record<string, string> = { en: 'en-US', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', nl: 'nl-NL' };
   const locale = localeMap[user.language || 'en'] || 'en-US';
@@ -487,6 +490,25 @@ export function Settings({
 
   return (
     <div className="page-enter settings-grid">
+      <div className="tq-card tq-card-padded">
+        <h3 className="tq-card-title">界面偏好</h3>
+        <div style={{ display: 'grid', gap: 14 }}>
+          <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 800, color: 'var(--warm-text)' }}>
+            语言
+            <select
+              className="tq-input"
+              value={user.language || 'zh'}
+              onChange={async (event) => { await onUpdatePreferences?.({ language: event.target.value }); }}
+            >
+              <option value="zh">中文</option><option value="en">English</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option><option value="it">Italiano</option><option value="nl">Nederlands</option>
+            </select>
+          </label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div><div style={{ fontSize: 13, fontWeight: 800, color: 'var(--warm-text)' }}>声音效果</div><div style={{ fontSize: 11, fontWeight: 600, color: 'var(--warm-text-light)' }}>控制操作提示音</div></div>
+            <Toggle checked={soundEnabled} onChange={(enabled) => { setSoundEnabled(enabled); localStorage.setItem('olive-sound-enabled', String(enabled)); }} />
+          </div>
+        </div>
+      </div>
       <div className="tq-card tq-card-padded">
         <h3 className="tq-card-title">{t('settings.general')}</h3>
         {user.role !== 'child' && (<>

@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { HomeIcon, RoomsIcon, TrophyIcon, CalendarIcon, ActivityIcon, AchievementsIcon, SettingsIcon, RewardsIcon } from '../icons/NavIcons';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { HomeIcon, RoomsIcon, TrophyIcon, SettingsIcon, RewardsIcon } from '../icons/NavIcons';
 import { CoinIcon } from '../icons/UIIcons';
 import { UserAvatar } from '../shared/UserAvatar';
 import { OliveTreeLogo } from '../shared/OliveTreeLogo';
@@ -14,50 +14,41 @@ interface SidebarProps {
   gamificationEnabled?: boolean;
   collapsed?: boolean;
   onToggle?: () => void;
-  onLanguageChange?: (language: string) => void;
 }
 
 const navItems = [
-  { to: '/quiz', label: 'Quiz', Icon: TrophyIcon },
-  { to: '/rewards', label: 'Rewards', Icon: RewardsIcon },
-  { to: '/rooms', label: 'Rooms', Icon: RoomsIcon },
   { to: '/', label: 'Home', Icon: HomeIcon },
-  { to: '/leaderboard', label: 'Board', Icon: TrophyIcon },
-  { to: '/calendar', label: 'Calendar', Icon: CalendarIcon },
-  { to: '/activity', label: 'Activity', Icon: ActivityIcon },
-  { to: '/achievements', label: 'Achievements', Icon: AchievementsIcon },
+  { to: '/#quiz-section', label: 'Quiz', Icon: TrophyIcon, sectionId: 'quiz-section' },
+  { to: '/#shop-section', label: 'Rewards', Icon: RewardsIcon, sectionId: 'shop-section' },
+  { to: '/#space-section', label: 'Rooms', Icon: RoomsIcon, sectionId: 'space-section' },
   { to: '/settings', label: 'Settings', Icon: SettingsIcon },
 ];
 
 const GAMIFICATION_ROUTES = new Set(['/leaderboard', '/rewards', '/achievements']);
 
-export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabled = true, onToggle, onLanguageChange }: SidebarProps) {
+export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabled = true, onToggle }: SidebarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation(user.language);
-  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('olive-sound-enabled') !== 'false');
   const bankNames = ['橄榄树数字银行', 'Olive Tree Digital Bank', 'Olivenbaum Digitalbank'];
   const [bankNameIndex, setBankNameIndex] = useState(0);
   useEffect(() => {
     const timer = window.setInterval(() => setBankNameIndex((index) => (index + 1) % bankNames.length), 3200);
     return () => window.clearInterval(timer);
   }, []);
-  const grade = Math.min(6, Math.max(1, Number((user as User & { grade?: number }).grade) || 1));
   // A horizontal header should always keep its navigation visible on desktop.
   // The original props remain accepted for backwards-compatible app-shell wiring.
   const effectiveCollapsed = false;
 
-  const handleNavClick = () => {
+  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, sectionId?: string) => {
+    if (sectionId && window.location.pathname === '/') {
+      event.preventDefault();
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.history.replaceState(null, '', `/#${sectionId}`);
+    }
     if (window.innerWidth <= 768 && onClose) {
       onClose();
     }
-  };
-
-  const toggleSound = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setSoundEnabled((enabled) => {
-      localStorage.setItem('olive-sound-enabled', String(!enabled));
-      return !enabled;
-    });
   };
 
   return (
@@ -185,9 +176,13 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
               to={item.to}
               end={item.to === '/'}
               style={{ textDecoration: 'none' }}
-              onClick={handleNavClick}
+              onClick={(event) => handleNavClick(event, item.sectionId)}
             >
-              {({ isActive }) => (
+              {({ isActive }) => {
+                const itemIsActive = item.sectionId
+                  ? location.pathname === '/' && location.hash === `#${item.sectionId}`
+                  : item.to === '/' ? isActive && !location.hash : isActive;
+                return (
                 <div
                   title={effectiveCollapsed ? t(`nav.${item.label.toLowerCase()}`) : undefined}
                   style={{
@@ -195,19 +190,20 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
                     padding: effectiveCollapsed ? '11px 0' : '11px 16px',
                     justifyContent: effectiveCollapsed ? 'center' : 'flex-start',
                     borderRadius: 14,
-                    backgroundColor: isActive ? 'var(--warm-sidebar-active)' : 'transparent',
-                    borderLeft: isActive ? '3px solid var(--warm-accent)' : '3px solid transparent',
+                    backgroundColor: itemIsActive ? 'var(--warm-sidebar-active)' : 'transparent',
+                    borderLeft: itemIsActive ? '3px solid var(--warm-accent)' : '3px solid transparent',
                     transition: 'all 0.15s ease',
                   }}>
-                  <span style={{ flexShrink: 0 }}><item.Icon active={isActive} /></span>
+                  <span style={{ flexShrink: 0 }}><item.Icon active={itemIsActive} /></span>
                   {!effectiveCollapsed && (
                     <span style={{
-                      fontSize: 14, fontWeight: isActive ? 800 : 600,
-                      color: isActive ? 'var(--warm-accent)' : 'var(--warm-text-muted)',
+                      fontSize: 14, fontWeight: itemIsActive ? 800 : 600,
+                      color: itemIsActive ? 'var(--warm-accent)' : 'var(--warm-text-muted)',
                     }}>{t(`nav.${item.label.toLowerCase()}`)}</span>
                   )}
                 </div>
-              )}
+                );
+              }}
             </NavLink>
           ))}
         </div>
@@ -223,6 +219,16 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
               cursor: 'pointer', transition: 'all 0.15s ease',
             }}
           >
+            {!effectiveCollapsed && (
+              <div className="olive-student-toolbar">
+                {gamificationEnabled && (
+                  <button className="olive-coin-counter" onClick={(e) => { e.stopPropagation(); navigate('/#shop-section'); }} aria-label={`${user.coins} 滴橄榄油`}>
+                    <CoinIcon /> <strong>{user.coins}</strong><span>滴橄榄油</span>
+                  </button>
+                )}
+                <span className="olive-student-name">{user.displayName}</span>
+              </div>
+            )}
             <UserAvatar
               name={user.displayName}
               color={user.avatarColor}
@@ -231,23 +237,6 @@ export function Sidebar({ user, isMobileOpen = false, onClose, gamificationEnabl
               avatarPreset={user.avatarPreset}
               avatarPhotoUrl={user.avatarPhotoUrl}
             />
-            {!effectiveCollapsed && (
-              <div className="olive-student-toolbar">
-                <select className="olive-language-switcher" value={user.language} onClick={(event) => event.stopPropagation()} onChange={(event) => onLanguageChange?.(event.target.value)} aria-label="Language">
-                  <option value="zh">中文</option><option value="en">EN</option><option value="fr">FR</option><option value="de">DE</option><option value="es">ES</option><option value="it">IT</option><option value="nl">NL</option>
-                </select>
-                <span className="olive-student-name">{user.displayName}</span>
-                <span className="olive-grade-tag">G{grade}</span>
-                <button className="olive-sound-toggle" onClick={toggleSound} aria-label={soundEnabled ? 'Mute sound effects' : 'Enable sound effects'} title={soundEnabled ? '声音已开启' : '声音已关闭'}>
-                  {soundEnabled ? '🔊' : '🔇'}
-                </button>
-                {gamificationEnabled && (
-                  <button className="olive-coin-counter" onClick={(e) => { e.stopPropagation(); navigate('/rewards'); }} aria-label={`${user.coins} 橄榄币`}>
-                    <CoinIcon /> <strong>{user.coins}</strong><span>橄榄币</span>
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </nav>

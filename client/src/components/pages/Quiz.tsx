@@ -17,9 +17,9 @@ export function Quiz() {
 
   return (
     <section className="quiz-page tq-card tq-card-padded page-enter">
-      <div className="quiz-eyebrow"><CoinIcon /> Quiz for Olive Coins · 答题淘金币</div>
-      <h2>今日橄榄树小挑战</h2>
-      <p>回答生活小问题，培养好习惯。答题奖励由家庭管理员统一结算。</p>
+      <div className="quiz-eyebrow"><CoinIcon /> 开发橄榄油</div>
+      <h2>开发橄榄油</h2>
+      <p>回答生活小问题，把好习惯炼成香醇的橄榄油。奖励由家庭管理员统一结算。</p>
       <div className="quiz-question">
         <strong>{question.prompt}</strong>
         <div className="quiz-options">
@@ -30,7 +30,7 @@ export function Quiz() {
           ))}
         </div>
       </div>
-      {complete && <div className={selected === question.correct ? 'quiz-result success' : 'quiz-result'}>{selected === question.correct ? '答对了！继续积累橄榄币吧。' : '再想一想，整齐收纳是很棒的习惯。'}</div>}
+      {complete && <div className={selected === question.correct ? 'quiz-result success' : 'quiz-result'}>{selected === question.correct ? '答对了！继续积累橄榄油吧。' : '再想一想，整齐收纳是很棒的习惯。'}</div>}
       <button className="tq-btn tq-btn-primary" disabled={selected === null} onClick={submit}>提交答案</button>
     </section>
   );

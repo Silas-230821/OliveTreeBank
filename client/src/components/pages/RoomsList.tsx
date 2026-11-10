@@ -9,6 +9,32 @@ import { ROOM_COLORS } from '../../utils/colors';
 import { api } from '../../hooks/useApi';
 import { useTranslation } from '../../hooks/useTranslation';
 
+function OliveTreeMeadow({ rooms, onSelectRoom }: { rooms: RoomsListProps['rooms']; onSelectRoom: (id: number) => void }) {
+  return (
+    <section className="olive-space-canvas" aria-label="我的空间草地">
+      <div className="olive-space-toolbar">
+        <div><h2>我的空间</h2><p>在橄榄树下慢慢建设属于你的天地</p></div>
+      </div>
+      <div className="meadow-grid" />
+      <div className="meadow-tree" title="橄榄树成长中..." aria-label="橄榄树成长中...">
+        <span className="tree-crown crown-one" /><span className="tree-crown crown-two" /><span className="tree-crown crown-three" />
+        <span className="tree-trunk" /><span className="tree-shadow" />
+        <span className="tree-tooltip">橄榄树成长中...</span>
+      </div>
+      <div className="meadow-zone farm-zone"><span>🌱</span><strong>种植区</strong><small>Farm</small></div>
+      <div className="meadow-zone building-zone"><span>🏡</span><strong>建造区</strong><small>Building</small></div>
+      <div className="meadow-zone pet-zone"><span>🐾</span><strong>宠物小屋</strong><small>Pet House</small></div>
+      <div className="meadow-room-markers">
+        {rooms.slice(0, 6).map((room) => (
+          <button key={room.id} onClick={() => onSelectRoom(room.id)} title={`进入 ${room.name}`}>
+            <span>{room.roomType === 'bedroom' ? '🛏️' : room.roomType === 'kitchen' ? '🍳' : '✨'}</span>{room.name}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const ROOM_TYPES = [
   { type: 'kitchen' },
   { type: 'bedroom' },
@@ -264,6 +290,11 @@ export function RoomsList({ rooms, language, isAdmin, users, onSelectRoom, onCre
 
   return (
     <>
+      <div className="olive-space-shell">
+        <OliveTreeMeadow rooms={rooms} onSelectRoom={onSelectRoom} />
+        {isAdmin && <button className="tq-btn tq-btn-primary olive-space-expand" onClick={() => setShowModal(true)}>+ 拓展空间</button>}
+      </div>
+      <div className="legacy-space-management" aria-hidden="true">
       {isAdmin && (
         <div style={{ marginBottom: 20 }}>
           <button className="tq-btn tq-btn-primary tq-btn-md"
@@ -486,6 +517,8 @@ export function RoomsList({ rooms, language, isAdmin, users, onSelectRoom, onCre
             </>
           );
         })()}
+      </div>
+
       </div>
 
       {/* Assign Room Modal */}

@@ -350,13 +350,9 @@ function AppContent() {
         onClose={() => setIsMobileSidebarOpen(false)}
         gamificationEnabled={gamificationEnabled}
         collapsed={sidebarCollapsed}
-        onLanguageChange={async (language) => {
-          await api.updateProfile(user.id, { language });
-          await refreshUser();
-        }}
       />
 
-      <main style={{ marginLeft: sidebarCollapsed ? 60 : 240, flex: 1, padding: '28px 36px', maxWidth: 1320, backgroundColor: 'var(--warm-bg)', transition: 'margin-left 0.3s ease' }} className="main-content">
+      <main style={{ marginLeft: 0, flex: 1, width: '100%', padding: '28px 36px', maxWidth: 'none', backgroundColor: 'var(--warm-bg)' }} className="main-content">
         <Routes>
           <Route path="/" element={
             <>
@@ -369,11 +365,46 @@ function AppContent() {
                   language={user.language}
                   gamificationEnabled={gamificationEnabled}
                   leaderboardPeriod={leaderboardPeriod}
+                  leaderboard={leaderboard}
+                  onLeaderboardPeriodChange={handleLeaderboardPeriodChange}
+                  completions={completions}
+                  calendarTasks={allTasks}
+                  achievementsData={achievementsData}
                   onCompleteTask={handleCompleteTask}
                   onRefresh={loadDashboard}
                   onNavigateToRoom={(id) => navigate(`/rooms/${id}`)}
                   onNavigateToActivity={() => navigate('/activity')}
-                  onNavigateToQuiz={() => navigate('/quiz')}
+                  spaceRooms={rooms}
+                  rewards={rewardsData.rewards}
+                  rewardRedemptions={rewardsData.mine}
+                  onCreateRoom={async (data) => {
+                    await api.createRoom(data);
+                    void refreshRooms();
+                  }}
+                  onDeleteRoom={async (roomId) => {
+                    await api.deleteRoom(roomId);
+                    void refreshRooms();
+                  }}
+                  onAssignRoom={async (roomId, assignedUserId, force) => {
+                    await api.updateRoom(roomId, { assignedUserId, ...(force ? { force: true } : {}) });
+                    void refreshRooms();
+                  }}
+                  onRenameRoom={async (roomId, name) => {
+                    await api.updateRoom(roomId, { name });
+                    void refreshRooms();
+                  }}
+                  onRedeemReward={async (rewardId) => {
+                    await api.redeemReward(rewardId);
+                    await refreshUser();
+                    await loadDashboard();
+                    await loadRewards();
+                  }}
+                  onCancelRedemption={async (redemptionId) => {
+                    await api.cancelRedemption(redemptionId);
+                    await refreshUser();
+                    await loadDashboard();
+                    await loadRewards();
+                  }}
                   onRewardRequestAction={async (id, status) => {
                     await api.updateRedemptionStatus(id, status);
                     await Promise.all([loadDashboard(), loadRewards()]);
@@ -410,7 +441,7 @@ function AppContent() {
           } />
           <Route path="/quiz" element={
             <>
-              <PageHeader title="答题挖金矿" subtitle="Mine for Olive Coins" user={user} onCoinsClick={() => navigate('/rewards')} onStreakClick={() => navigate('/achievements')} onPointsClick={handlePointsClick} userPoints={myPoints} pointsPeriodLabel={pointsPeriodLabel} gamificationEnabled={gamificationEnabled} />
+              <PageHeader title="开发橄榄油" subtitle="Make Olive Oil" user={user} onCoinsClick={() => navigate('/rewards')} onStreakClick={() => navigate('/achievements')} onPointsClick={handlePointsClick} userPoints={myPoints} pointsPeriodLabel={pointsPeriodLabel} gamificationEnabled={gamificationEnabled} />
               <Quiz />
             </>
           } />
@@ -494,6 +525,10 @@ function AppContent() {
                   if (memberUserId === user.id) {
                     await refreshUser();
                   }
+                }}
+                onUpdatePreferences={async (profile) => {
+                  await api.updateProfile(user.id, profile);
+                  await refreshUser();
                 }}
                 onChangePassword={async (targetUserId, payload) => {
                   await api.updatePassword(targetUserId, payload);

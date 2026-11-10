@@ -60,10 +60,8 @@ export function FireIcon() {
 export function CoinIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-      <circle cx="11" cy="11" r="9" fill="#FBBF24" stroke="var(--warm-coin)" strokeWidth="1.5" />
-      <text x="11" y="15" textAnchor="middle" fontSize="11" fontWeight="800" fill="#92400E">
-        $
-      </text>
+      <path d="M11 2.5C8.2 6.3 5 9.5 5 13.1A6 6 0 0 0 17 13.1C17 9.5 13.8 6.3 11 2.5Z" fill="#86EFAC" stroke="#059669" strokeWidth="1.5" />
+      <path d="M8.2 14.2c.7 1.5 2 2.2 3.6 2.2" stroke="#ECFDF5" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
